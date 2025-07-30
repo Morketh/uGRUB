@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "uGRUB: Create Multiboot USB",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder}/support_scripts/create_MBUSB.py",
+        "console": "integratedTerminal",
+        "args": ["/dev/sdX"],
+        "env": {
+          "PYTHONUNBUFFERED": "1"
+        }
+      }
+    ]
+  }
+  
