@@ -10,9 +10,9 @@ DEVICE = ""
 EFI_PART = ""
 EXT_PART = ""
 
-def run(cmd, check=True, capture_output=False, shell=False, input=None):
+def run(cmd, check=True, capture_output=False, shell=False, cmd_input=None):
     print(f"[+] Running: {' '.join(cmd) if isinstance(cmd, list) else cmd}")
-    return subprocess.run(cmd, check=check, capture_output=capture_output, shell=shell, text=True, input=input)
+    return subprocess.run(cmd, check=check, capture_output=capture_output, shell=shell, text=True, input=cmd_input)
 
 def confirm(prompt):
     ans = input(f"{prompt} (yes/no): ").strip().lower()
@@ -26,7 +26,7 @@ def partition_device():
 
     # Partition table: EFI (FAT32) + EXT4
     fdisk_script = "o\nn\np\n1\n\n+300M\nt\nc\nn\np\n2\n\n\nw\n"
-    run(["sudo", "fdisk", DEVICE], input=fdisk_script.encode())
+    run(["sudo", "fdisk", DEVICE], cmd_input=fdisk_script)
 
     run(["sudo", "partprobe", DEVICE])
 
@@ -83,7 +83,7 @@ def copy_files():
         print("[-] Source directories not found. Aborting.")
         sys.exit(1)
 
-    copy_with_pv(images_src, Path("/mnt"))
+    copy_with_pv(images_src, Path("/mnt") / images_src.name)
     run(["sudo", "mkdir", "-p", str(grub_dst)])
     copy_with_pv(grub_src, grub_dst)
 
@@ -97,7 +97,6 @@ def main():
 
     if os.geteuid() != 0:
         print("[-] Please run this script as root or with sudo.")
-        sys.exit(1)
 
     if len(sys.argv) != 2:
         print(f"Usage: sudo {sys.argv[0]} /dev/sdX")
