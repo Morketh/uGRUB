@@ -7,7 +7,7 @@
         "request": "launch",
         "program": "${workspaceFolder}/support_scripts/create_MBUSB.py",
         "console": "integratedTerminal",
-        "args": ["/dev/sdX"],
+        "args": "${command:pickArgs}",
         "env": {
           "PYTHONUNBUFFERED": "1"
         }
